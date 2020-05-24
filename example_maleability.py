@@ -24,8 +24,7 @@ plain_1_goal          = 0b101010101010
 
 print("cipher before modification: " + str(bin(cipher[0])))
 
-# cipher[0] = plain_1_goal ^ cipher_1_intermediate # the modification!
-cipher[0] = cipher[0] ^ plain[1] ^ plain_1_goal
+cipher[1] = cipher[1] ^ plain[1] ^ plain_1_goal
 
 print("cipher after modification : " + str(bin(cipher[0])))
 
