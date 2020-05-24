@@ -40,7 +40,7 @@ def very_secure_decryption(cipher: int, key) -> int:
     """
     return cipher - key % 2**CBC_BLOCK_SIZE
 
-def _cbc_split(unsplit: int) -> List[int]:
+def cbc_split(unsplit: int) -> List[int]:
     """
     Split `unsplit` into blocks of size < CBC_BLOCK_SIZE
     """
@@ -53,17 +53,19 @@ def _cbc_split(unsplit: int) -> List[int]:
         int(unsplit_str[i:i + CBC_BLOCK_SIZE], 2) for i in range(0, len(unsplit_str), CBC_BLOCK_SIZE)
     ]
 
-def cbc_encrypt_string(plain: str, key: int) -> List[int]:
+def cbc_encrypt_string(plain: str, key: int) -> str:
     """
     Encrypt a string with CBC and return the list of encrypted blocks.
     """
-    return cbc_encrypt(_cbc_split(text_to_ascii(plain)), key)
+    return ':'.join([str(e) for e in cbc_encrypt(cbc_split(text_to_ascii(plain)), key)])
 
-def cbc_decrypt_string(cipher: List[int], key: int) -> List[int]:
+def cbc_decrypt_string(cipher: str, key: int) -> str:
     """
     Decrypt a list of CBC encrypted blocks into a string.
     """
-    return "".join([ascii_to_text(p) for p in cbc_decrypt(cipher, key)])
+    return "".join([ascii_to_text(p) for p in cbc_decrypt(
+        [ int(e) for e in cipher.split(":") ], key
+    )])
 
 def cbc_encrypt(plain: List[int], key: int) -> List[int]:
     """
