@@ -74,11 +74,14 @@ def cbc_encrypt(plain: List[int], key: int) -> List[int]:
     https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation
     """
     initialization_vector = CBC_INITIALIZATION_VECTOR
-    cipher = [ very_secure_encryption(plain[0] ^ initialization_vector, key) ]
+    cipher = [
+        very_secure_encryption(initialization_vector, key),
+        very_secure_encryption(plain[0] ^ initialization_vector, key)
+    ]
     for i in range(1, len(plain)):
         if plain[i] > 2**CBC_BLOCK_SIZE:
             raise Exception("invalid block size [%d]: (%d)" % (i, plain[i]))
-        cipher.append(very_secure_encryption(plain[i] ^ cipher[i - 1], key))
+        cipher.append(very_secure_encryption(plain[i] ^ cipher[i], key))
     return cipher
 
 def cbc_decrypt(cipher: List[int], key: int) -> List[int]:
@@ -87,9 +90,9 @@ def cbc_decrypt(cipher: List[int], key: int) -> List[int]:
     the CBC mode of operation - see
     https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation
     """
-    initialization_vector = CBC_INITIALIZATION_VECTOR
-    plain = [ very_secure_decryption(cipher[0], key) ^ initialization_vector ]
-    for i in range(1, len(cipher)):
+    initialization_vector = very_secure_decryption(cipher[0], key)
+    plain = [ very_secure_decryption(cipher[1], key) ^ initialization_vector ]
+    for i in range(2, len(cipher)):
         if cipher[i] > 2**CBC_BLOCK_SIZE:
             raise Exception("invalid block size [%d]: (%d)" % (i, cipher[i]))
         plain.append(very_secure_decryption(cipher[i], key) ^ cipher[i - 1])
