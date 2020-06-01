@@ -75,7 +75,7 @@ def cbc_encrypt(plain: List[int], key: int) -> List[int]:
     """
     initialization_vector = CBC_INITIALIZATION_VECTOR
     cipher = [
-        very_secure_encryption(initialization_vector, key),
+        initialization_vector,
         very_secure_encryption(plain[0] ^ initialization_vector, key)
     ]
     for i in range(1, len(plain)):
@@ -90,7 +90,7 @@ def cbc_decrypt(cipher: List[int], key: int) -> List[int]:
     the CBC mode of operation - see
     https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation
     """
-    initialization_vector = very_secure_decryption(cipher[0], key)
+    initialization_vector = cipher[0]
     plain = [ very_secure_decryption(cipher[1], key) ^ initialization_vector ]
     for i in range(2, len(cipher)):
         if cipher[i] > 2**CBC_BLOCK_SIZE:
